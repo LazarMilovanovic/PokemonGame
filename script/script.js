@@ -109,11 +109,11 @@ function winCountSecondPokemon() {
 ///////////////////////////////
 firstPokemonImg.onclick = () => {
   if (Number(firstPokemonStrenght.textContent) >= Number(secondPokemonStrenght.textContent)) {
-    firstPokemonStrenght.classList.add("pokemon-strenght-reveal");
-    secondPokemonStrenght.classList.add("pokemon-strenght-reveal");
+    firstPokemonStrenght.classList.add("pokemon-strength-reveal");
+    secondPokemonStrenght.classList.add("pokemon-strength-reveal");
     firstPokemonImg.classList.add("correct-answer", "disable-click");
     setTimeout(() => {
-      secondPokemonStrenght.classList.remove("pokemon-strenght-reveal");
+      secondPokemonStrenght.classList.remove("pokemon-strength-reveal");
       getSecondRandomPokemon();
       scoreCorrectAnswer();
       winCountFirstPokemon();
@@ -121,7 +121,9 @@ firstPokemonImg.onclick = () => {
       firstPokemonImg.classList.remove("correct-answer", "disable-click");
     }, 2000);
   } else {
-    firstPokemonImg.classList.add("incorrect-answer");
+    firstPokemonStrenght.classList.add("pokemon-strength-reveal");
+    secondPokemonStrenght.classList.add("pokemon-strength-reveal");
+    firstPokemonImg.classList.add("incorrect-answer", "disable-click");
     setTimeout(() => {
       setHighScore();
       score.textContent = 0;
@@ -129,8 +131,9 @@ firstPokemonImg.onclick = () => {
       startScreen.style.visibility = "visible";
       getFirstRandomPokemon();
       getSecondRandomPokemon();
-      secondPokemonStrenght.classList.remove("pokemon-strenght-reveal");
-      firstPokemonImg.classList.remove("incorrect-answer");
+      firstPokemonStrenght.classList.remove("pokemon-strength-reveal");
+      secondPokemonStrenght.classList.remove("pokemon-strength-reveal");
+      firstPokemonImg.classList.remove("incorrect-answer", "disable-click");
       console.clear(); //For testing purpose
     }, 2000);
   }
@@ -141,11 +144,12 @@ firstPokemonImg.onclick = () => {
 ////////////////////////////////
 secondPokemonImg.onclick = () => {
   if (Number(secondPokemonStrenght.textContent) >= Number(firstPokemonStrenght.textContent)) {
-    firstPokemonStrenght.classList.add("pokemon-strenght-reveal");
-    secondPokemonStrenght.classList.add("pokemon-strenght-reveal");
+    firstPokemonStrenght.classList.add("pokemon-strength-reveal");
+    secondPokemonStrenght.classList.add("pokemon-strength-reveal");
     secondPokemonImg.classList.add("correct-answer", "disable-click");
+
     setTimeout(() => {
-      firstPokemonStrenght.classList.remove("pokemon-strenght-reveal");
+      firstPokemonStrenght.classList.remove("pokemon-strength-reveal");
       getFirstRandomPokemon();
       scoreCorrectAnswer();
       winCountSecondPokemon();
@@ -153,7 +157,9 @@ secondPokemonImg.onclick = () => {
       secondPokemonImg.classList.remove("correct-answer", "disable-click");
     }, 2000);
   } else {
-    secondPokemonImg.classList.add("incorrect-answer");
+    firstPokemonStrenght.classList.add("pokemon-strength-reveal");
+    secondPokemonStrenght.classList.add("pokemon-strength-reveal");
+    secondPokemonImg.classList.add("incorrect-answer", "disable-click");
     setTimeout(() => {
       setHighScore();
       score.textContent = 0;
@@ -161,8 +167,9 @@ secondPokemonImg.onclick = () => {
       startScreen.style.visibility = "visible";
       getFirstRandomPokemon();
       getSecondRandomPokemon();
-      firstPokemonStrenght.classList.remove("pokemon-strenght-reveal");
-      secondPokemonImg.classList.remove("incorrect-answer");
+      secondPokemonStrenght.classList.remove("pokemon-strength-reveal");
+      firstPokemonStrenght.classList.remove("pokemon-strength-reveal");
+      secondPokemonImg.classList.remove("incorrect-answer", "disable-click");
       console.clear(); //For testing purpose
     }, 2000);
   }

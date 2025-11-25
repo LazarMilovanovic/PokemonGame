@@ -137,7 +137,7 @@ main {
   z-index: 1;
   position: absolute;
 }
-.pokemon-strenght-reveal {
+.pokemon-strength-reveal {
   animation: strenth-reveal 2s forwards;
 }
 
