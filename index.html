@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guess stronger pokemon</title>
+    <link rel="stylesheet" href="/style/style.css" />
+  </head>
+  <body>
+    <!-- START OVERLAY -->
+    <div class="start-game" id="start-game">
+      <p>Click on Pokemons image to choose</p>
+      <button class="start-game__btn" id="start-btn">Play</button>
+    </div>
+    <!-- END OVERLAY -->
+
+    <!-- START MAIN -->
+    <main>
+      <p class="title"><strong>GUESS WITCH POKEMON IS STRONGER</strong></p>
+
+      <!-- START FIRST POKEMON -->
+      <section class="pokemon">
+        <h2 class="pokemon__name" id="first-pokemon-title"></h2>
+        <img src="/images/pokeball.png" alt="Pokemon One" class="pokemon__img" id="first-pokemon-img" />
+        <p class="pokemon__strenght" id="first-pokemon-strenght"></p>
+      </section>
+      <!-- END FIRST POKEMON -->
+      <p class="vs-text">VS</p>
+      <!-- START SECOND POKEMON -->
+      <section class="pokemon">
+        <h2 class="pokemon__name" id="second-pokemon-title"></h2>
+        <img src="/images/pokeball.png" alt="Pokemon Two" class="pokemon__img" id="second-pokemon-img" />
+        <p class="pokemon__strenght" id="second-pokemon-strenght"></p>
+      </section>
+      <!-- END SECOND POKEMON -->
+
+      <!-- START SCORE  -->
+      <div class="scores">
+        <p class="scores__high-score">High Score: <strong id="high-score"></strong></p>
+        <p class="scores__score">Score: <strong id="score">0</strong></p>
+      </div>
+      <!-- END SCORE -->
+    </main>
+    <!-- END MAIN -->
+    <script src="/script/script.js"></script>
+  </body>
+</html>
