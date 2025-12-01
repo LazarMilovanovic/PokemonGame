@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Guess stronger pokemon</title>
+    <title>Pokemon game</title>
     <link rel="stylesheet" href="style/style.css" />
   </head>
   <body>
@@ -20,16 +20,16 @@
 
       <!-- START FIRST POKEMON -->
       <section class="pokemon">
-        <h2 class="pokemon__name" id="first-pokemon-title"></h2>
-        <img src="images/pokeball.png" alt="Pokemon One" class="pokemon__img" id="first-pokemon-img" />
+        <p class="pokemon__name" id="first-pokemon-title"></p>
+        <img src="/images/pokeball.png" alt="Pokemon One" class="pokemon__img" id="first-pokemon-img" onclick="chosePokemon(1)" />
         <p class="pokemon__strenght" id="first-pokemon-strenght"></p>
       </section>
       <!-- END FIRST POKEMON -->
       <p class="vs-text">VS</p>
       <!-- START SECOND POKEMON -->
       <section class="pokemon">
-        <h2 class="pokemon__name" id="second-pokemon-title"></h2>
-        <img src="images/pokeball.png" alt="Pokemon Two" class="pokemon__img" id="second-pokemon-img" />
+        <p class="pokemon__name" id="second-pokemon-title"></p>
+        <img src="/images/pokeball.png" alt="Pokemon Two" class="pokemon__img" id="second-pokemon-img" onclick="chosePokemon(2)" />
         <p class="pokemon__strenght" id="second-pokemon-strenght"></p>
       </section>
       <!-- END SECOND POKEMON -->
@@ -41,8 +41,12 @@
       </div>
       <!-- END SCORE -->
     </main>
+    <div class="comments">
+      <p class="comments__text">Comments:</p>
+      <ul class="comments__list" id="game-comments"></ul>
+    </div>
+
     <!-- END MAIN -->
     <script src="script/script.js"></script>
   </body>
 </html>
-

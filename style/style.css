@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Jersey+15&family=Lato:wght@900&family=Manrope:wght@200..800&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
 
 :root {
-  --primary-color: rgb(0, 0, 0); /*Black*/
+  --primary-color: rgb(8, 8, 8); /*Black*/
   --secondary-color: rgb(255, 0, 0); /*Red*/
 }
 
@@ -12,16 +12,21 @@
   font-family: "Open Sans", sans-serif;
 }
 
+body {
+  background-color: rgb(223, 223, 115); /*Yellow*/
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 3%;
+}
+
 /* ///// */
 /* MAIN */
 /* /// */
 main {
-  background-color: rgb(223, 223, 115); /*Yellow*/
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 3%;
-  height: 100vh;
 }
 
 /* //////////////////////// */
@@ -34,7 +39,7 @@ main {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.75); /*Transparent black*/
-  z-index: 1;
+  z-index: 100;
   display: flex;
   color: rgb(255, 255, 255); /*White*/
   flex-direction: column;
@@ -43,27 +48,38 @@ main {
   text-align: center;
 }
 
+/* VISIBILITY HIDDEN/VISIBLE */
+.hide-overlay {
+  visibility: hidden;
+}
+
+.show-overlay {
+  visibility: visible;
+}
+
 .start-game p {
-  font-size: 1.2rem;
+  font-size: 20px;
 }
 
 .start-game__btn {
-  width: 10rem;
-  padding: 1rem;
-  margin-top: 2rem;
-  font-size: 1.5rem;
+  width: 150px;
+  padding: 20px;
+  margin-top: 30px;
+  font-size: 25px;
   color: var(--secondary-color); /*Red*/
   font-weight: 900;
   border-radius: 10px;
+  cursor: pointer;
 }
 
 /* /////////// */
 /* MAIN TITLE */
 /* ///////// */
 .title {
-  font-size: 1.5rem;
+  font-size: 25px;
   text-align: center;
-  margin: 1rem 0;
+  /* margin: 15px; */
+  margin: 15px 0 auto;
 }
 
 /* ////////////// */
@@ -78,7 +94,7 @@ main {
 
 .pokemon__name {
   text-align: center;
-  /* margin-bottom: 0.5rem; */
+  font-size: 25px;
 }
 
 .pokemon__img {
@@ -128,14 +144,15 @@ main {
 /* POKEMON STRENGHT */
 /* /////////////// */
 .pokemon__strenght {
-  font-size: 2rem;
+  font-size: 30px;
   background-color: rgba(255, 255, 255, 0.5); /*Transparent white\gray*/
-  border-radius: 2rem;
+  border-radius: 30px;
   color: var(--primary-color); /*Black*/
-  padding: 0.3rem;
+  padding: 5px;
   opacity: 0;
-  z-index: 1;
+  z-index: 50;
   position: absolute;
+  pointer-events: none;
 }
 .pokemon-strength-reveal {
   animation: strenth-reveal 2s forwards;
@@ -156,20 +173,18 @@ main {
 .vs-text {
   color: var(--secondary-color); /*Red*/
   text-align: center;
-  padding-top: 0.2rem;
+  padding-top: 5px;
   width: 75px;
   height: 75px;
-  font-size: 3rem;
-  margin: 0.75rem 0;
-  /* border: 1px solid black;
-  border-radius: 50%; */
+  font-size: 50px;
+  margin: 10px 0;
 }
 
 /* ////// */
 /* SCORES*/
 /* //// */
 .scores {
-  font-size: 1.2rem;
+  font-size: 20px;
   margin-top: auto;
   width: 280px;
   display: flex;
@@ -179,15 +194,65 @@ main {
   margin-left: auto;
 }
 
+/* ///////// */
+/* COMMENTS */
+/* /////// */
+
+.comments__text {
+  margin-top: 10px;
+  text-align: center;
+}
+.comments__list {
+  text-align: center;
+  margin: 20px 0 10px;
+  border: 1px solid var(--primary-color);
+  border-radius: 15px;
+  height: 300px;
+  overflow-y: scroll;
+}
+.comments__list::-webkit-scrollbar {
+  width: 10px;
+}
+
+li {
+  list-style: none;
+  margin: 5px;
+  font-weight: 700;
+}
+
+.win-round {
+  color: rgb(65, 151, 71); /* GREEN/WIN */
+}
+.loss-round {
+  color: rgb(255, 0, 0); /* RED/LOSS */
+}
+
 /* //////////// */
 /* TABLET VIEW */
 /* ////////// */
 @media (min-width: 768px) {
-  main {
-    padding: 0 9rem;
+  body {
+    flex-direction: row;
   }
   .pokemon__img {
     width: 275px;
+  }
+  .comments {
+    margin: auto;
+    text-align: center;
+  }
+  .comments__list {
+    margin: auto 0;
+    width: 400px;
+    height: 300px;
+    border: 1px solid var(--primary-color);
+    border-radius: 15px;
+    white-space: pre-line;
+    opacity: 0.6;
+    overflow-y: scroll;
+  }
+  .comments__list:hover {
+    opacity: 1;
   }
 }
 
@@ -195,7 +260,7 @@ main {
 /* DESKTOP VIEW */
 /* /////////// */
 @media (min-width: 1024px) {
-  main {
-    padding: 0 16rem;
+  body {
+    padding: 0 100px;
   }
 }
