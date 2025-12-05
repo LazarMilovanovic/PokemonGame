@@ -12,11 +12,6 @@ const gameComments = document.getElementById("game-comments");
 
 highScoreText.textContent = JSON.parse(localStorage.getItem("high-score")) || 0;
 
-////////////////////
-// GAME COMMENTS //
-//////////////////
-let roundComment = document.createElement("li");
-
 //////////////////////////////
 //  HIDE START GAME OVERLAY //
 /////////////////////////////
@@ -28,35 +23,23 @@ let roundComment = document.createElement("li");
 /////////////////////////
 // GET RANDOM POKEMON //
 ///////////////////////
-async function getRandomPokemon(elPassed) {
+async function getRandomPokemon(pokeImg, pokeTitle, pokeStrenght) {
   try {
     let randomPokemon = Math.floor(Math.random() * 1024) + 1;
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${randomPokemon}`);
     const data = await response.json();
-    if (elPassed === 1) {
-      console.log("First Pokemon", data.base_experience);
-      firstPokemonImg.src = data.sprites.other.home.front_default;
-      firstPokemonStrenght.textContent = data.base_experience;
-      const firstName = data.name[0].toUpperCase() + data.name.slice(1);
-      firstPokemonTitle.textContent = firstName.replaceAll("-", " ");
-    } else if (elPassed === 2) {
-      console.log("Second Pokemon", data.base_experience);
-      secondPokemonImg.src = data.sprites.other.home.front_default;
-      secondPokemonStrenght.textContent = data.base_experience;
-      const secondName = data.name[0].toUpperCase() + data.name.slice(1);
-      secondPokemonTitle.textContent = secondName.replaceAll("-", " ");
-    }
+
+    pokeImg.src = data.sprites.other.home.front_default;
+    pokeStrenght.textContent = data.base_experience;
+    const pokeName = data.name[0].toUpperCase() + data.name.slice(1);
+    pokeTitle.textContent = pokeName.replaceAll("-", " ");
+    console.log(pokeName, data.base_experience);
   } catch (err) {
     console.error(err);
   }
 }
-getRandomPokemon(1);
-getRandomPokemon(2);
-
-setTimeout(() => {
-  roundComment.textContent = `${firstPokemonTitle.textContent} vs ${secondPokemonTitle.textContent}`;
-}, 500);
-gameComments.append(roundComment);
+getRandomPokemon(firstPokemonImg, firstPokemonTitle, firstPokemonStrenght);
+getRandomPokemon(secondPokemonImg, secondPokemonTitle, secondPokemonStrenght);
 
 //////////////////
 // SCORE COUNT //
@@ -72,7 +55,6 @@ function correctAnswerScore() {
 /////////////////////
 function setHighScore() {
   let highScore = JSON.parse(localStorage.getItem("high-score")) || 0;
-
   if (Number(score.textContent) > highScore) {
     highScore = Number(score.textContent);
     localStorage.setItem("high-score", JSON.stringify(highScore));
@@ -85,22 +67,31 @@ function setHighScore() {
 /////////////////////////////
 let winFirstPoke = 0;
 let winSecondPoke = 0;
-function winCountPokemon(num) {
-  if (num === 1) {
-    winFirstPoke++;
-    if (winFirstPoke === 5) {
-      getRandomPokemon(1);
-      winFirstPoke = 0;
-      firstPokemonStrenght.classList.remove("pokemon-strength-reveal");
-    }
-  } else if (num === 2) {
-    winSecondPoke++;
-    if (winSecondPoke === 5) {
-      getRandomPokemon(2);
-      winSecondPoke = 0;
-      secondPokemonStrenght.classList.remove("pokemon-strength-reveal");
-    }
+function switchOnFiveWins(arg) {
+  arg === 1 ? (winFirstPoke++, (winSecondPoke = 0)) : (winSecondPoke++, (winFirstPoke = 0));
+
+  if (winFirstPoke === 5) {
+    getRandomPokemon(firstPokemonImg, firstPokemonTitle, firstPokemonStrenght);
+    firstPokemonStrenght.classList.remove("pokemon-strength-reveal");
+    winFirstPoke = 0;
+  } else if (winSecondPoke === 5) {
+    getRandomPokemon(secondPokemonImg, secondPokemonTitle, secondPokemonStrenght);
+    secondPokemonStrenght.classList.remove("pokemon-strength-reveal");
+    winSecondPoke = 0;
   }
+}
+
+function afterWinSetTimeout(arg) {
+  setTimeout(() => {
+    arg === 1 ? firstPokemonStrenght.classList.remove("pokemon-strength-reveal") : secondPokemonStrenght.classList.remove("pokemon-strength-reveal");
+    arg === 1 ? getRandomPokemon(firstPokemonImg, firstPokemonTitle, firstPokemonStrenght) : getRandomPokemon(secondPokemonImg, secondPokemonTitle, secondPokemonStrenght);
+    correctAnswerScore();
+    arg === 1 ? switchOnFiveWins() : switchOnFiveWins(1);
+    arg === 1 ? secondPokemonImg.classList.remove("correct-answer") : firstPokemonImg.classList.remove("correct-answer");
+    firstPokemonImg.classList.remove("disable-click");
+    secondPokemonImg.classList.remove("disable-click");
+    vsComment();
+  }, 2000);
 }
 
 ///////////////////////////
@@ -109,121 +100,81 @@ function winCountPokemon(num) {
 function chosePokemon(num) {
   if (num === 1) {
     if (Number(firstPokemonStrenght.textContent) >= Number(secondPokemonStrenght.textContent)) {
-      firstPokemonStrenght.classList.add("pokemon-strength-reveal");
-      secondPokemonStrenght.classList.add("pokemon-strength-reveal");
-      firstPokemonImg.classList.add("correct-answer", "disable-click");
-      secondPokemonImg.classList.add("disable-click");
-      // START Comments if First Pokemon Wins
-      let firstPokeWinLi = document.createElement("li");
-      let firstPokemonWinRound = document.createElement("span");
-      firstPokemonWinRound.textContent = `${firstPokemonTitle.textContent} (${firstPokemonStrenght.textContent})`;
-      firstPokemonWinRound.classList.add("win-round");
-      let secondPokemonLossRound = document.createElement("span");
-      secondPokemonLossRound.textContent = `${secondPokemonTitle.textContent} (${secondPokemonStrenght.textContent})`;
-      secondPokemonLossRound.classList.add("loss-round");
-      firstPokeWinLi.append(firstPokemonWinRound, " vs ", secondPokemonLossRound);
-      gameComments.append(firstPokeWinLi);
-      // END Comments if First Pokemon Wins
-      setTimeout(() => {
-        secondPokemonStrenght.classList.remove("pokemon-strength-reveal");
-        getRandomPokemon(2);
-        correctAnswerScore();
-        winCountPokemon(1);
-        winSecondPoke = 0;
-        firstPokemonImg.classList.remove("correct-answer", "disable-click");
-        secondPokemonImg.classList.remove("disable-click");
-        // START Comments After First Pokemon Wins
-        let newRound = document.createElement("li");
-        setTimeout(() => {
-          newRound.textContent = `${firstPokemonTitle.textContent} vs ${secondPokemonTitle.textContent}`;
-        }, 500);
-        gameComments.append(newRound);
-        // END Comments After First Pokemon Wins
-      }, 2000);
+      winOutcome(true);
+      afterWinSetTimeout(2);
     } else {
-      firstPokemonStrenght.classList.add("pokemon-strength-reveal");
-      secondPokemonStrenght.classList.add("pokemon-strength-reveal");
-      firstPokemonImg.classList.add("incorrect-answer", "disable-click");
-      secondPokemonImg.classList.add("disable-click");
-      setTimeout(() => {
-        setHighScore();
-        score.textContent = 0;
-        scoreIncrease = 0;
-        startScreen.classList.remove("hide-overlay");
-        startScreen.classList.add("show-overlay");
-        getRandomPokemon(1);
-        getRandomPokemon(2);
-        firstPokemonStrenght.classList.remove("pokemon-strength-reveal");
-        secondPokemonStrenght.classList.remove("pokemon-strength-reveal");
-        firstPokemonImg.classList.remove("incorrect-answer", "disable-click");
-        secondPokemonImg.classList.remove("disable-click");
-        // START Comment After First Looses / Restart Comments
-        gameComments.textContent = "";
-        setTimeout(() => {
-          roundComment.textContent = `${firstPokemonTitle.textContent} vs ${secondPokemonTitle.textContent}`;
-        }, 500);
-        gameComments.append(roundComment);
-        // END Comment After First Looses
-      }, 2000);
+      afterLossComment(true);
     }
   } else if (num === 2) {
     if (Number(secondPokemonStrenght.textContent) >= Number(firstPokemonStrenght.textContent)) {
-      firstPokemonStrenght.classList.add("pokemon-strength-reveal");
-      secondPokemonStrenght.classList.add("pokemon-strength-reveal");
-      secondPokemonImg.classList.add("correct-answer", "disable-click");
-      firstPokemonImg.classList.add("disable-click");
-      // START Comments if Second Wins
-      let secondPokeWinLi = document.createElement("li");
-      let secondPokemonWinRound = document.createElement("span");
-      secondPokemonWinRound.textContent = `${secondPokemonTitle.textContent} (${secondPokemonStrenght.textContent})`;
-      secondPokemonWinRound.classList.add("win-round");
-      let firstPokemonLossRound = document.createElement("span");
-      firstPokemonLossRound.textContent = `${firstPokemonTitle.textContent} (${firstPokemonStrenght.textContent})`;
-      firstPokemonLossRound.classList.add("loss-round");
-      secondPokeWinLi.append(firstPokemonLossRound, " vs ", secondPokemonWinRound);
-      gameComments.append(secondPokeWinLi);
-      // END Comments if Second Wins
-      setTimeout(() => {
-        firstPokemonStrenght.classList.remove("pokemon-strength-reveal");
-        getRandomPokemon(1);
-        correctAnswerScore();
-        winCountPokemon(2);
-        winFirstPoke = 0;
-        secondPokemonImg.classList.remove("correct-answer", "disable-click");
-        firstPokemonImg.classList.remove("disable-click");
-        // START Comments After First Wins
-        let newRound = document.createElement("li");
-        setTimeout(() => {
-          newRound.textContent = `${firstPokemonTitle.textContent} vs ${secondPokemonTitle.textContent}`;
-        }, 500);
-        gameComments.append(newRound);
-        // END Comments After First Wins
-      }, 2000);
+      winOutcome();
+      afterWinSetTimeout(1);
     } else {
-      firstPokemonStrenght.classList.add("pokemon-strength-reveal");
-      secondPokemonStrenght.classList.add("pokemon-strength-reveal");
-      secondPokemonImg.classList.add("incorrect-answer", "disable-click");
-      firstPokemonImg.classList.add("disable-click");
-      setTimeout(() => {
-        setHighScore();
-        score.textContent = 0;
-        scoreIncrease = 0;
-        startScreen.classList.remove("hide-overlay");
-        startScreen.classList.add("show-overlay");
-        getRandomPokemon(1);
-        getRandomPokemon(2);
-        secondPokemonStrenght.classList.remove("pokemon-strength-reveal");
-        firstPokemonStrenght.classList.remove("pokemon-strength-reveal");
-        secondPokemonImg.classList.remove("incorrect-answer", "disable-click");
-        firstPokemonImg.classList.remove("disable-click");
-        // START Comment If second looses
-        gameComments.textContent = "";
-        setTimeout(() => {
-          roundComment.textContent = `${firstPokemonTitle.textContent} vs ${secondPokemonTitle.textContent}`;
-        }, 500);
-        gameComments.append(roundComment);
-        // END Comment If second looses
-      }, 2000);
+      afterLossComment();
     }
   }
+}
+
+////////////////////
+// GAME COMMENTS //
+//////////////////
+function vsComment() {
+  let roundComment = document.createElement("li");
+  setTimeout(() => {
+    roundComment.textContent = `${firstPokemonTitle.textContent} vs ${secondPokemonTitle.textContent}`;
+  }, 500);
+  gameComments.append(roundComment);
+}
+vsComment();
+
+function winOutcome(arg) {
+  firstPokemonStrenght.classList.add("pokemon-strength-reveal");
+  secondPokemonStrenght.classList.add("pokemon-strength-reveal");
+
+  arg ? firstPokemonImg.classList.add("correct-answer") : secondPokemonImg.classList.add("correct-answer");
+  firstPokemonImg.classList.add("disable-click");
+  secondPokemonImg.classList.add("disable-click");
+
+  let winnerComment = document.createElement("li");
+  let winPokemon = document.createElement("span");
+  winPokemon.classList.add("win-round");
+  let lossPokemon = document.createElement("span");
+  lossPokemon.classList.add("loss-round");
+
+  arg
+    ? ((winPokemon.textContent = `${firstPokemonTitle.textContent} (${firstPokemonStrenght.textContent})`),
+      (lossPokemon.textContent = `${secondPokemonTitle.textContent} (${secondPokemonStrenght.textContent})`))
+    : ((lossPokemon.textContent = `${firstPokemonTitle.textContent} (${firstPokemonStrenght.textContent})`),
+      (winPokemon.textContent = `${secondPokemonTitle.textContent} (${secondPokemonStrenght.textContent})`));
+
+  arg ? winnerComment.append(winPokemon, " vs ", lossPokemon) : winnerComment.append(lossPokemon, " vs ", winPokemon);
+  gameComments.append(winnerComment);
+}
+
+//////////////////////////
+// COMMENTS AFTER LOSS //
+////////////////////////
+function afterLossComment(arg) {
+  firstPokemonStrenght.classList.add("pokemon-strength-reveal");
+  secondPokemonStrenght.classList.add("pokemon-strength-reveal");
+  arg
+    ? (firstPokemonImg.classList.add("incorrect-answer", "disable-click"), secondPokemonImg.classList.add("disable-click"))
+    : (secondPokemonImg.classList.add("incorrect-answer", "disable-click"), firstPokemonImg.classList.add("disable-click"));
+  setTimeout(() => {
+    setHighScore();
+    score.textContent = 0;
+    scoreIncrease = 0;
+    startScreen.classList.remove("hide-overlay");
+    startScreen.classList.add("show-overlay");
+    getRandomPokemon(firstPokemonImg, firstPokemonTitle, firstPokemonStrenght);
+    getRandomPokemon(secondPokemonImg, secondPokemonTitle, secondPokemonStrenght);
+    firstPokemonStrenght.classList.remove("pokemon-strength-reveal");
+    secondPokemonStrenght.classList.remove("pokemon-strength-reveal");
+    arg ? firstPokemonImg.classList.remove("incorrect-answer") : secondPokemonImg.classList.remove("incorrect-answer");
+    firstPokemonImg.classList.remove("disable-click");
+    secondPokemonImg.classList.remove("disable-click");
+
+    gameComments.textContent = "";
+    vsComment();
+  }, 2000);
 }
